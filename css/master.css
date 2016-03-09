@@ -1,22 +1,13 @@
-.photo-tile {
-	padding-bottom: 2em;
+body {
+	background-color: #000;
+	font-family: 'Ubuntu', sans-serif;
 }
 
-.photo-details-hidden {
-	display: none;
-}
-
-.photo-details {
-	background-color: #fff;
+.location-name {
+	color: #fff;
+	font-size: 10em;
+	width: 100%;
+	text-align: center;
 	position: absolute;
-	top: 10%;
-	left: 2%;
-	right: 2%;
-	border-width: 20px;
-	border-color: #fff;
-	border-style: solid;
-}
-
-.photos-details-close {
-	cursor: pointer;
+	top: 1em;
 }
