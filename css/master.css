@@ -12,6 +12,11 @@ body {
 	top: 1em;
 }
 
+#photo-tile-container {
+	width: 100vw;
+	height: 100vh;
+}
+
 .photo-tile-container {
 	width: 10vw;
 	height: 10vw;
