@@ -47,19 +47,19 @@
       fillColor: new Color(1, 1, 1),
     });
     
-    var maxChars = 40;
+    var maxChars = 38;
     
     this.titleText = new PointText(this.getTitlePosition());
     this.titleText.fillColor = 'black';
     this.titleText.wordwrap(landmarkData.title, maxChars);
-    this.titleText.fontSize = 3;
+    this.titleText.fontSize = 3 * this.width/60;
     this.titleText.fontWeight = "bold";
     //this.titleText.bounds = this.infoPath.bounds;
     
     this.descriptionText = new PointText(this.getDescriptionPosition());
     this.descriptionText.fillColor = 'black';
     this.descriptionText.wordwrap(landmarkData.description, maxChars);
-    this.descriptionText.fontSize = 3;
+    this.descriptionText.fontSize = 3 * this.width/60;
     //this.descriptionText.bounds = this.infoPath.bounds;
 
     // Create an 'add' button
@@ -167,21 +167,21 @@
     
     getTitlePosition: function() {
       return new Point({
-        x: this.point.x + this.width + 5,
-        y: this.point.y + 10
+        x: this.point.x + this.width + this.width/15,
+        y: this.point.y + this.width/10
       });
     },
     
     getDescriptionPosition: function() {
       return new Point({
-        x: this.point.x + this.width + 5,
-        y: this.point.y + 20
+        x: this.point.x + this.width + this.width/15,
+        y: this.point.y + this.width/5
       });
     },
 
     getAddIconPosition: function() {
       var xPoint = this.point.x + this.width;
-      var yPoint = this.point.y + this.width - addIconWidth*2 -5;
+      var yPoint = this.point.y + this.width - addIconWidth*2.6;
       return new Point({
         x: xPoint,
         y: yPoint
@@ -244,8 +244,8 @@
   var magnetPoint = new Point(view.size.width/2, view.size.height/2);
 
   
-  var width = 70 //Math.random() * 60 + 60;
-  var addIconWidth = width/3;
+  var width = 150 //Math.random() * 60 + 60;
+  var addIconWidth = width/4;
   var images = [];  
 
   //console.log(landmarkData);
