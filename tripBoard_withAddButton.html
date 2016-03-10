@@ -65,14 +65,15 @@
     // Create an 'add' button
     var addIconPosition = this.getAddIconPosition();
     this.addIcon = new Raster('assets/add.png');
-    var sendItem = {title: landmarkData.title, description: landmarkData.description, image: image};
+    var sendItem = {id: this.id, title: landmarkData.title, description: landmarkData.description, image: image};
 
     this.addIcon.onLoad = function () {
       var scaleFactor = addIconWidth / this.size.width;
       this.scale(scaleFactor);
       this.position = addIconPosition;
       this.onClick = function(event) {
-        console.log(sendItem);
+        // console.log(sendItem);
+        itinerary.addItem(sendItem);
       }
     };
 
@@ -189,6 +190,102 @@
     }
   };
 
+
+
+// Create itinerary object
+function Itinerary(w) {
+  this.margin = 15;
+  this.width = w;
+  // this.images = [QRcode];
+  this.point = null;
+  this.group = null;
+  this.items = [{id: "QRcode", image:QRcode}];
+}
+
+Itinerary.prototype = {
+  
+  addItem: function(item) {
+    // Check if item exists, skip adding if so
+    for(i=0; i<this.items.length; i++){
+      if(this.items[i].id === item.id) return;
+    }
+
+    var index = this.items.push(item) -1;
+    this.formatImage(index);
+    console.log(index, this.items);
+  },
+
+  formatImage: function(index) {
+    // Set group position based on clicked image (if not yet visible)
+    if (this.point === null) {
+      this.point = new Point ({
+        x: this.items[index].image.position.x + this.width*1.7,
+        y: this.items[index].image.position.y - this.width/2 - this.margin
+      });
+    }
+
+    // Create square image mask and add image to it
+    var imageMask = new Path.Rectangle({
+        size: new Size(this.width, this.width),
+        point: this.point
+    });
+    var formatImage = this.items[index].image.clone();
+    formatImage.position = this.point + this.width/2;
+
+    var imageGroup = new Group(imageMask, formatImage);
+    imageGroup.clipped = true;
+
+    // Add image to image array and re-render
+    // this.images.push(imageGroup);
+    this.items[index].image = imageGroup;
+    this.layoutImages();
+  },
+
+  // layout images in the array
+  layoutImages: function() {
+    if (this.group){
+      this.group.remove();  
+    }
+
+    // group contianer and images
+    var container = this.renderContainer();
+    this.group = new Group();
+    this.group.addChild(container);
+    // container.sendToBack();
+
+    // align images (position == center)
+    for (i=0; i<this.items.length; i++){
+      this.group.addChild(this.items[i].image);
+      this.items[i].image.position = new Point({
+        x: this.point.x + this.margin + this.width/2,
+        y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * i
+      });
+    }
+
+    this.group.bringToFront();
+  }, 
+
+  // Render the container to put pictures in (resizing doesn't seem to work)
+  renderContainer: function() {
+    outerSize = new Size(this.width + (this.margin * 2), 
+          this.margin + (this.width+this.margin) * this.items.length);
+    
+    var outerPath = new Path.Rectangle({
+      size: outerSize,
+      fillColor: new Color(1, 1, 1),
+      radius: new Size(this.width/30, this.width/30),
+      point: this.point,
+      opacity: 0.8
+    });
+
+
+    return outerPath;
+  }
+
+}
+
+
+
   //--------------------- main ---------------------
 
   /**
@@ -246,6 +343,14 @@
   
   var width = 150 //Math.random() * 60 + 60;
   var addIconWidth = width/4;
+
+  var QRcode = new Raster('assets/QRcode.png');
+  QRcode.onLoad = function () {
+    var scaleFactor = width/ QRcode.size.width;
+    QRcode.scale(scaleFactor);
+  };
+
+  var itinerary = new Itinerary(width);
   var images = [];  
 
   //console.log(landmarkData);
