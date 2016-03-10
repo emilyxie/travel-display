@@ -5,9 +5,20 @@ var MAXTOP = vh - (vh*0.15);
 var xValue = MAXLEFT;
 var yValue = MAXTOP;
 
+var TILEDATA = [
+	{id: 'rome1'},
+	{id: 'rome2'},
+	{id: 'rome3'},
+	{id: 'rome4'},
+	{id: 'rome5'},
+	{id: 'rome6'},
+	{id: 'rome7'},
+	{id: 'rome8'},
+	{id: 'rome9'}
+];
+
 function photoTile(i, timeOut){
-	console.log(timeOut);
-	$('#photo-tile-container').append('<div class="photo-tile-container" id="' + i.id + '"><img src="assets/rome1.jpg" class="photo-tile-photo"></div>');
+	$('#photo-tile-container').append('<div class="photo-tile-container" id="' + i.id + '"><img src="assets/' + i.id + '.jpg" class="photo-tile-photo"></div>');
 	var htmlElement = $('#' + i.id);
 	var shouldMove = true;
 	function move(shouldMove, htmlElement){
@@ -49,10 +60,10 @@ function photoTile(i, timeOut){
 }
 
 window.onload = function(){
-	var i = {id: 'rome1'};
-	var i2 = {id: 'rome2'};
-	var tile = new photoTile(i, Math.random()*2000 + 2000);
-	var tile2 = new photoTile(i2, Math.random()*2000 + 2000);
+	var tiles = [];
+	TILEDATA.forEach(function(i){
+		tiles.push(new photoTile(i, Math.random()*2000 + 2000));
+	});
 
 	$('body').mousemove(function(e){
 		if(e.pageX > MAXLEFT || e.pageX <= 0 || e.pageY > MAXTOP || e.pageY <= 0){
