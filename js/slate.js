@@ -22,6 +22,7 @@ canvas.addEventListener("mousemove", function(event) {
 });
 
 
+
 PointText.prototype.wordwrap = function(txt,max){
   var lines=[];
   var space=-1;
@@ -86,7 +87,6 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
     this.scale(scaleFactor);
     this.position = addIconPosition;
     this.onClick = function(event) {
-      // console.log(sendItem);
       itinerary.addItem(sendItem);
     };
   };
