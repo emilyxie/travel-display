@@ -1,22 +1,47 @@
-PointText.prototype.wordwrap = function(txt,max){
-    var lines=[];
-    var space=-1;
-    times=0;
-    function cut(){
-        for(var i=0;i<txt.length;i++){
-            (txt[i]==' ')&&(space=i);
-            if(i>=max){
-                (space==-1||txt[i]==' ')&&(space=i);
-                if(space>0){lines.push(txt.slice((txt[0]==' '?1:0),space));}
-                txt=txt.slice(txt[0]==' '?(space+1):space);
-                space=-1;
-                break;
-                }}check();}
-    function check(){if(txt.length<=max){lines.push(txt[0]==' '?txt.slice(1):txt);txt='';}else if(txt.length){cut();}return;}
-    check();
-    return this.content=lines.join('\n');
+//global variables
+var canvas = document.getElementById("myCanvas");
+var itinerary = new Itinerary(width);
+var images = [];
+var numPhotoTiles = landmarkData.length;
+var photoTiles = [];
+var magnetPoint = new Point(view.size.width/2, view.size.height/2);
+var width = 150;
+var addIconWidth = width/4;
+var QRcode = new Raster('assets/QRcode.png');
+
+QRcode.onLoad = function () {
+  var scaleFactor = width/ QRcode.size.width;
+  QRcode.scale(scaleFactor);
+  QRcode.visible = false;
 };
 
+canvas.addEventListener("mousemove", function(event) {
+  var newX = event.x;//- canvas.getBoundingClientRect().left;
+  var newY = event.y; //- canvas.getBoundingClientRect().top;
+  magnetPoint = new Point(newX, newY);
+});
+
+
+PointText.prototype.wordwrap = function(txt,max){
+  var lines=[];
+  var space=-1;
+  times=0;
+  function cut(){
+      for(var i=0;i<txt.length;i++){
+          (txt[i]==' ')&&(space=i);
+          if(i>=max){
+              (space==-1||txt[i]==' ')&&(space=i);
+              if(space>0){lines.push(txt.slice((txt[0]==' '?1:0),space));}
+              txt=txt.slice(txt[0]==' '?(space+1):space);
+              space=-1;
+              break;
+              }}check();}
+  function check(){if(txt.length<=max){lines.push(txt[0]==' '?txt.slice(1):txt);txt='';}else if(txt.length){cut();}return;}
+  check();
+  return this.content=lines.join('\n');
+};
+
+// Photo Tile Object
 function PhotoTile(w, p, v, id, image, landmarkData) {
   this.id = id;
   this.width = w;
@@ -75,6 +100,7 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
   addClickListener(this.imageGroup, id);
 }
 
+// Photo tile class functions
 PhotoTile.prototype = {
   iterate: function() {
     if(!this.isSelected) {
@@ -177,8 +203,6 @@ PhotoTile.prototype = {
   }
 };
 
-
-
 // Create itinerary object
 function Itinerary(w) {
   this.margin = 15;
@@ -189,6 +213,7 @@ function Itinerary(w) {
   this.items = [{id: "QRcode", image:QRcode}];
 }
 
+// Itinerary object functions
 Itinerary.prototype = {
   
   addItem: function(item) {
@@ -265,29 +290,10 @@ Itinerary.prototype = {
       point: this.point,
       opacity: 0.8
     });
-
-
     return outerPath;
   }
 
 };
-  
-var numPhotoTiles = landmarkData.length;
-var photoTiles = [];
-var magnetPoint = new Point(view.size.width/2, view.size.height/2);
-
-var width = 150; //Math.random() * 60 + 60;
-var addIconWidth = width/4;
-
-var QRcode = new Raster('assets/QRcode.png');
-QRcode.onLoad = function () {
-  var scaleFactor = width/ QRcode.size.width;
-  QRcode.scale(scaleFactor);
-  QRcode.visible = false;
-};
-
-var itinerary = new Itinerary(width);
-var images = [];
 
 for (var i = 0; i < numPhotoTiles; i++) {
   // Add and clip images to each path, scaling/ rerasterizing as appropriate
@@ -316,13 +322,6 @@ function addClickListener(group, i) {
     photoTiles[i].toggleSelection();
   };
 }
-
-var canvas = document.getElementById("myCanvas");
-canvas.addEventListener("mousemove", function(event) {
-  var newX = event.x;//- canvas.getBoundingClientRect().left;
-  var newY = event.y; //- canvas.getBoundingClientRect().top;
-  magnetPoint = new Point(newX, newY);
-});
 
 function onFrame() {
   var i, j, k;
