@@ -17,6 +17,22 @@ var TILEDATA = [
 	{id: 'rome9'}
 ];
 
+function sanitizeCoordinates(x, y){
+	if(x<0){
+		x = 0;
+	} else if(x >= MAXLEFT){
+		x = MAXLEFT;
+	}
+
+	if(y<0){
+		y = 0;
+	} else if(y >= MAXTOP){
+		y = MAXTOP;
+	}
+
+	return {x: x, y: y};
+}
+
 function photoTile(i, timeOut){
 	$('#photo-tile-container').append('<div class="photo-tile-container" id="' + i.id + '"><img src="assets/' + i.id + '.jpg" class="photo-tile-photo"></div>');
 	var htmlElement = $('#' + i.id);
@@ -28,10 +44,11 @@ function photoTile(i, timeOut){
 				y = Math.random() * yValue;
 				x = Math.random() * xValue;
 			} else {
-				y = Math.random()* (vh*0.25) + (yValue - vw*0.075);
-				x = Math.random()* (vw*0.25) + (xValue - vw*0.075);
+				y = Math.random()* (vh*0.35) + (yValue - vw*0.075);
+				x = Math.random()* (vw*0.35) + (xValue - vw*0.075);
 			}
-			htmlElement.animate({top: "" + y, left: "" + x}, timeOut, 'linear');
+			coordinates = sanitizeCoordinates(x, y);
+			htmlElement.animate({top: "" + coordinates.y, left: "" + coordinates.x}, timeOut, 'linear');
 		}
 	}
 
