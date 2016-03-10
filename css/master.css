@@ -11,3 +11,16 @@ body {
 	position: absolute;
 	top: 1em;
 }
+
+.photo-tile-container {
+	width: 10vw;
+	height: 10vw;
+	overflow: hidden;
+	z-index: 10000;
+	position: absolute;
+}
+
+.photo-tile-photo {
+	width: auto;
+	height: 10vw;
+}
