@@ -1,6 +1,6 @@
 //global variables
 var canvas = document.getElementById("myCanvas");
-var itinerary = new Itinerary(width);
+var itinerary;
 var images = [];
 var numPhotoTiles = landmarkData.length;
 var photoTiles = [];
@@ -20,6 +20,7 @@ canvas.addEventListener("mousemove", function(event) {
   var newY = event.y; //- canvas.getBoundingClientRect().top;
   magnetPoint = new Point(newX, newY);
 });
+
 
 
 PointText.prototype.wordwrap = function(txt,max){
@@ -86,7 +87,6 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
     this.scale(scaleFactor);
     this.position = addIconPosition;
     this.onClick = function(event) {
-      // console.log(sendItem);
       itinerary.addItem(sendItem);
     };
   };
@@ -322,6 +322,8 @@ function addClickListener(group, i) {
     photoTiles[i].toggleSelection();
   };
 }
+
+itinerary = new Itinerary(width);
 
 function onFrame() {
   var i, j, k;
