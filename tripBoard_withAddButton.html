@@ -65,7 +65,7 @@
     // Create an 'add' button
     var addIconPosition = this.getAddIconPosition();
     this.addIcon = new Raster('assets/add.png');
-    var sendItem = {title: landmarkData.title, description: landmarkData.description};
+    var sendItem = {title: landmarkData.title, description: landmarkData.description, image: image};
 
     this.addIcon.onLoad = function () {
       var scaleFactor = addIconWidth / this.size.width;
