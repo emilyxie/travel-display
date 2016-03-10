@@ -1,6 +1,6 @@
 //global variables
 var canvas = document.getElementById("myCanvas");
-var itinerary = new Itinerary(width);
+var itinerary;
 var images = [];
 var numPhotoTiles = landmarkData.length;
 var photoTiles = [];
@@ -322,6 +322,8 @@ function addClickListener(group, i) {
     photoTiles[i].toggleSelection();
   };
 }
+
+itinerary = new Itinerary(width);
 
 function onFrame() {
   var i, j, k;
