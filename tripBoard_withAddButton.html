@@ -181,8 +181,8 @@
     },
 
     getAddIconPosition: function() {
-      var xPoint = this.point.x + this.width;
-      var yPoint = this.point.y + this.width - addIconWidth*2.6;
+      var xPoint = this.point.x + this.width + this.width/2;
+      var yPoint = this.point.y + this.width - addIconWidth/2 - 5;
       return new Point({
         x: xPoint,
         y: yPoint
@@ -251,6 +251,7 @@ Itinerary.prototype = {
     var container = this.renderContainer();
     this.group = new Group();
     this.group.addChild(container);
+    QRcode.visible = true;
     // container.sendToBack();
 
     // align images (position == center)
@@ -348,6 +349,7 @@ Itinerary.prototype = {
   QRcode.onLoad = function () {
     var scaleFactor = width/ QRcode.size.width;
     QRcode.scale(scaleFactor);
+    QRcode.visible = false;
   };
 
   var itinerary = new Itinerary(width);
