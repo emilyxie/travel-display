@@ -6,7 +6,7 @@ var numPhotoTiles = landmarkData.length;
 var photoTiles = [];
 var magnetPoint = new Point(view.size.width/2, view.size.height/2);
 var width = 150;
-var addIconWidth = width/4;
+var addIconWidth = width/8;
 var QRcode = new Raster('assets/QRcode.png');
 
 QRcode.onLoad = function () {
@@ -79,6 +79,7 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
 
   // Create an 'add' button
   var addIconPosition = this.getAddIconPosition();
+  var mapPosition = this.getMapPosition();
   this.addIcon = new Raster('assets/add.png');
   var sendItem = {id: this.id, title: landmarkData.title, description: landmarkData.description, image: image};
 
@@ -91,7 +92,15 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
     };
   };
 
-  this.infoGroup = new Group(this.titleText, this.descriptionText, this.infoPath, this.addIcon);
+
+  this.mapImage = new Raster('assets/map.png');
+  this.mapImage.onLoad = function () {
+    var scaleFactor = 140/this.size.width;
+    this.scale(scaleFactor);
+    this.position = mapPosition;
+  };
+
+  this.infoGroup = new Group(this.titleText, this.descriptionText, this.infoPath, this.addIcon, this.mapImage);
   this.infoGroup.visible = false;
   
   this.imageGroup = new Group(this.path, images[i]);
@@ -194,13 +203,22 @@ PhotoTile.prototype = {
   },
 
   getAddIconPosition: function() {
-    var xPoint = this.point.x + this.width + this.width/2;
+    var xPoint = this.point.x + this.width + this.width - addIconWidth;
     var yPoint = this.point.y + this.width - addIconWidth/2 - 5;
     return new Point({
       x: xPoint,
       y: yPoint
     });
-  }
+  },
+
+  getMapPosition: function() {
+    var xPoint = this.point.x + this.width + this.width/2;
+    var yPoint = this.point.y + (this.width*2)/3;
+    return new Point({
+      x: xPoint,
+      y: yPoint
+    });
+  },
 };
 
 // Create itinerary object
