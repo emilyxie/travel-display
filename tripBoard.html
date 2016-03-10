@@ -61,7 +61,14 @@
     this.descriptionText.wordwrap(landmarkData.description, maxChars);
     this.descriptionText.fontSize = 3;
     //this.descriptionText.bounds = this.infoPath.bounds;
-    
+
+
+    // console.log("making add icon");
+
+    // this.addIcon = clone(addIcon);
+    // this.addIcon.position = this.getAddIconPosition();
+
+    // this.infoGroup = new Group(this.titleText, this.descriptionText, this.infoPath, this.addIcon);
     this.infoGroup = new Group(this.titleText, this.descriptionText, this.infoPath);
     this.infoGroup.visible = false;
     
@@ -130,6 +137,7 @@
         this.infoGroup.bringToFront();
         this.titleText.bringToFront();
         this.descriptionText.bringToFront();
+        // this.addIcon.bringToFront();
       } else {
       }
     },
@@ -161,6 +169,13 @@
         y: this.point.y + 20
       });
     },
+
+    // getAddIconPosition: function() {
+    //   return new Point({
+    //     x: this.point.x + this.width/2 - addIconWidth/2,
+    //     y: this.point.y + this.width - addIconWidth - 5;
+    //   });
+    // },
   };
 
   //--------------------- main ---------------------
@@ -217,8 +232,16 @@
   var balls = [];
   var magnetPoint = new Point(view.size.width/2, view.size.height/2);
 
-  var images = [];
+  
   var width = 70 //Math.random() * 60 + 60;
+  var images = [];
+
+
+
+  // var addIcon = new Raster('add.png');
+  // var addIconWidth = width/3;
+  // var scaleFactor = addIconWidth / addIcon.size.width;
+  // addIcon.scale(scaleFactor);
 
   //console.log(landmarkData);
 
@@ -237,8 +260,9 @@
       
     var scaleFactor = width / Math.min(image.size.width, image.size.height);
     image.scale(scaleFactor);
-    index = images.push(image.rasterize()) -1; //push a rasterized copy
-    image.remove();
+    // index = images.push(image.rasterize()) -1; //push a rasterized copy
+    index = images.push(image) -1;
+    // image.remove();
 
     balls.push(new Ball(width, position, vector, index, images[index], landmarkData));
   };
