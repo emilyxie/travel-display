@@ -7,12 +7,19 @@ var photoTiles = [];
 var magnetPoint = new Point(view.size.width/2, view.size.height/2);
 var width = 200;
 var addIconWidth = width/8;
-var QRcode = new Raster('assets/QRcode.png');
+var QRcode = new Raster('assets/qr.jpg');
+var itineraryTitle = new Raster('assets/title.png');
 
 QRcode.onLoad = function () {
   var scaleFactor = (width/2)/ QRcode.size.width;
   QRcode.scale(scaleFactor);
   QRcode.visible = false;
+};
+
+itineraryTitle.onLoad = function () {
+  var scaleFactor = (width/2)/ itineraryTitle.size.height;
+  itineraryTitle.scale(scaleFactor);
+  itineraryTitle.visible = false;
 };
 
 canvas.addEventListener("mousemove", function(event) {
@@ -226,7 +233,7 @@ function Itinerary(w) {
   this.width = w;
   this.point = null;
   this.group = null;
-  this.items = [{id: "QRcode", image:QRcode}];
+  this.items = [{id: "title", image: itineraryTitle}, {id: "QRcode", image:QRcode}];
 }
 
 // Itinerary object functions
@@ -237,10 +244,9 @@ Itinerary.prototype = {
     for(i=0; i<this.items.length; i++){
       if(this.items[i].id === item.id) return;
     }
-
-    var index = this.items.push(item) -1;
-    this.formatImage(index);
-    console.log(index, this.items);
+    this.items.splice(this.items.length-1, 1, item, {id: "QRcode", image:QRcode});
+    // var index = this.items.push(item) -1;
+    this.formatImage(this.items.length-2);
   },
 
   formatImage: function(index) {
@@ -280,6 +286,7 @@ Itinerary.prototype = {
     this.group = new Group();
     this.group.addChild(container);
     QRcode.visible = true;
+    itineraryTitle.visible = true;
     // container.sendToBack();
 
     // align images (position == center)
