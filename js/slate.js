@@ -5,12 +5,12 @@ var images = [];
 var numPhotoTiles = landmarkData.length;
 var photoTiles = [];
 var magnetPoint = new Point(view.size.width/2, view.size.height/2);
-var width = 150;
+var width = 200;
 var addIconWidth = width/8;
 var QRcode = new Raster('assets/QRcode.png');
 
 QRcode.onLoad = function () {
-  var scaleFactor = width/ QRcode.size.width;
+  var scaleFactor = (width/2)/ QRcode.size.width;
   QRcode.scale(scaleFactor);
   QRcode.visible = false;
 };
@@ -92,10 +92,9 @@ function PhotoTile(w, p, v, id, image, landmarkData) {
     };
   };
 
-
   this.mapImage = new Raster('assets/map.png');
   this.mapImage.onLoad = function () {
-    var scaleFactor = 140/this.size.width;
+    var scaleFactor = width/this.size.width;
     this.scale(scaleFactor);
     this.position = mapPosition;
   };
@@ -225,7 +224,6 @@ PhotoTile.prototype = {
 function Itinerary(w) {
   this.margin = 15;
   this.width = w;
-  // this.images = [QRcode];
   this.point = null;
   this.group = null;
   this.items = [{id: "QRcode", image:QRcode}];
@@ -248,9 +246,9 @@ Itinerary.prototype = {
   formatImage: function(index) {
     // Set group position based on clicked image (if not yet visible)
     if (this.point === null) {
-      this.point = new Point ({
-        x: this.items[index].image.position.x + this.width*1.7,
-        y: this.items[index].image.position.y - this.width/2 - this.margin
+      this.point = new Point({
+        x: view.size.width - 2.5*this.width,
+        y: view.size.height/3
       });
     }
 
@@ -287,19 +285,33 @@ Itinerary.prototype = {
     // align images (position == center)
     for (i=0; i<this.items.length; i++){
       this.group.addChild(this.items[i].image);
-      this.items[i].image.position = new Point({
-        x: this.point.x + this.margin + this.width/2,
-        y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * i
-      });
+      var currentRow = i/2;
+      if(i%2 === 0){
+        this.items[i].image.position = new Point({
+          x: this.point.x + this.margin + this.width/2,
+          y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
+        });
+      } else {
+        currentRow -= 0.5;
+        this.items[i].image.position = new Point({
+          x: this.point.x + this.margin*2 + this.width*3/2,
+          y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
+        });
+      }
     }
-
     this.group.bringToFront();
   },
 
   // Render the container to put pictures in (resizing doesn't seem to work)
   renderContainer: function() {
-    outerSize = new Size(this.width + (this.margin * 2), 
-          this.margin + (this.width+this.margin) * this.items.length);
+    var iHeight = this.items.length/2 + 1;
+    if(this.items.length%2 === 0){
+      iHeight -= 1;
+    } else if(this.items.length > 1) {
+      iHeight -= 0.5;
+    }
+    outerSize = new Size(this.width*2 + (this.margin * 3), 
+          this.margin + (this.width+this.margin) * iHeight);
     
     var outerPath = new Path.Rectangle({
       size: outerSize,
@@ -309,8 +321,13 @@ Itinerary.prototype = {
       opacity: 0.8
     });
     return outerPath;
-  }
+  },
 
+  bringToFront: function(){
+    if(this.group){
+       this.group.bringToFront();
+    }
+  },
 };
 
 for (var i = 0; i < numPhotoTiles; i++) {
@@ -338,10 +355,11 @@ function addPhotoTileWithData(image, landmarkData) {
 function addClickListener(group, i) {
   group.onClick = function(event) {
     photoTiles[i].toggleSelection();
+    itinerary.bringToFront();
   };
 }
 
-itinerary = new Itinerary(width);
+itinerary = new Itinerary(width/2);
 
 function onFrame() {
   var i, j, k;
