@@ -28,8 +28,6 @@ canvas.addEventListener("mousemove", function(event) {
   magnetPoint = new Point(newX, newY);
 });
 
-
-
 PointText.prototype.wordwrap = function(txt,max){
   var lines=[];
   var space=-1;
@@ -249,6 +247,14 @@ Itinerary.prototype = {
     this.formatImage(this.items.length-2);
   },
 
+  removeItem: function(id){
+      this.items = this.items.filter(function(e){
+        return e.id !== id;
+      });
+      this.layoutImages();
+      console.log(this.items);
+  },
+
   formatImage: function(index) {
     // Set group position based on clicked image (if not yet visible)
     if (this.point === null) {
@@ -265,9 +271,13 @@ Itinerary.prototype = {
     });
     var formatImage = this.items[index].image.clone();
     formatImage.position = this.point + this.width/2;
-
     var imageGroup = new Group(imageMask, formatImage);
     imageGroup.clipped = true;
+    imageGroup.details = this.items[index];
+
+    imageGroup.onClick = function(){
+      itinerary.removeItem(this.details.id);
+    };
 
     // Add image to image array and re-render
     // this.images.push(imageGroup);
@@ -281,32 +291,34 @@ Itinerary.prototype = {
       this.group.remove();
     }
 
-    // group contianer and images
-    var container = this.renderContainer();
-    this.group = new Group();
-    this.group.addChild(container);
-    QRcode.visible = true;
-    itineraryTitle.visible = true;
-    // container.sendToBack();
+    if(this.items.length > 2){
+      // group contianer and images
+      var container = this.renderContainer();
+      this.group = new Group();
+      this.group.addChild(container);
+      QRcode.visible = true;
+      itineraryTitle.visible = true;
+      // container.sendToBack();
 
-    // align images (position == center)
-    for (i=0; i<this.items.length; i++){
-      this.group.addChild(this.items[i].image);
-      var currentRow = i/2;
-      if(i%2 === 0){
-        this.items[i].image.position = new Point({
-          x: this.point.x + this.margin + this.width/2,
-          y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
-        });
-      } else {
-        currentRow -= 0.5;
-        this.items[i].image.position = new Point({
-          x: this.point.x + this.margin*2 + this.width*3/2,
-          y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
-        });
+      // align images (position == center)
+      for (i=0; i<this.items.length; i++){
+        this.group.addChild(this.items[i].image);
+        var currentRow = i/2;
+        if(i%2 === 0){
+          this.items[i].image.position = new Point({
+            x: this.point.x + this.margin + this.width/2,
+            y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
+          });
+        } else {
+          currentRow -= 0.5;
+          this.items[i].image.position = new Point({
+            x: this.point.x + this.margin*2 + this.width*3/2,
+            y: this.point.y + this.margin + this.width/2 + (this.width+this.margin) * currentRow
+          });
+        }
       }
+      this.group.bringToFront();
     }
-    this.group.bringToFront();
   },
 
   // Render the container to put pictures in (resizing doesn't seem to work)
